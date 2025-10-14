@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const database = require('./database');
 const logger = require('./logger');
+const momentum = require('./momentum');
 
 const app = express();
 const PORT = process.env.PORT || 3019;
@@ -247,6 +248,44 @@ app.post('/api/prices/summary', async (req, res) => {
     }
 });
 
+// Simple momentum analysis endpoint
+app.get('/api/momentum/:symbol', async (req, res) => {
+    try {
+        await initializeDatabase();
+        const { symbol } = req.params;
+        const upperSymbol = symbol.toUpperCase();
+        
+        const prices = await database.getPriceData(upperSymbol);
+        
+        if (prices.length === 0) {
+            return res.status(404).json({
+                success: false,
+                error: 'No price data found for ' + upperSymbol
+            });
+        }
+
+        // Simple momentum analysis
+        const analysisData = prices.slice(-100); // Last 100 days
+        const analysis = momentum.analyzeMomentum(analysisData);
+
+        res.json({
+            success: true,
+            symbol: upperSymbol,
+            momentum_score: analysis.score,
+            rating: analysis.rating,
+            rsi: analysis.indicators?.rsi?.value,
+            last_updated: new Date().toISOString()
+        });
+
+    } catch (error) {
+        logger.error(`Error analyzing momentum for ${req.params.symbol}:`, error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
     res.json({
@@ -255,6 +294,11 @@ app.get('/api/health', (req, res) => {
         timestamp: new Date().toISOString(),
         database: dbInitialized ? 'connected' : 'not initialized'
     });
+});
+
+// Serve ETF viewer page
+app.get('/viewer', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'etf-viewer.html'));
 });
 
 // Serve main page
