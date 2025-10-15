@@ -1,26 +1,15 @@
-# ETF-app-data
+# ETF-app-1n: Single ETF Analysis (No Switching Strategy)
 
-A comprehensive ETF data collection system that retrieves historical closing prices for 14 core ETFs from 2015-2025 and stores them in an SQLite database.
+A focused ETF analysis system that concentrates on **SPY (S&P 500)** only, implementing a simple buy-and-hold strategy with comprehensive momentum analysis. This is designed for single ETF investment with no switching between different assets.
 
-## 📊 Covered ETFs
+## 📊 Focus ETF
 
-### Core ETFs (3)
+### Single ETF - No Switching Strategy
 - **SPY** - SPDR S&P 500 ETF Trust
-- **TLT** - iShares 20+ Year Treasury Bond ETF  
-- **SHY** - iShares 1-3 Year Treasury Bond ETF
-
-### Sector ETFs (11)
-- **XLK** - Technology Select Sector SPDR Fund
-- **XLF** - Financial Select Sector SPDR Fund
-- **XLV** - Health Care Select Sector SPDR Fund
-- **XLI** - Industrial Select Sector SPDR Fund
-- **XLE** - Energy Select Sector SPDR Fund
-- **XLY** - Consumer Discretionary Select Sector SPDR Fund
-- **XLP** - Consumer Staples Select Sector SPDR Fund
-- **XLU** - Utilities Select Sector SPDR Fund
-- **XLB** - Materials Select Sector SPDR Fund
-- **XLRE** - Real Estate Select Sector SPDR Fund
-- **XLC** - Communication Services Select Sector SPDR Fund
+  - **Strategy**: Buy & Hold (No Switching)
+  - **Analysis**: 5D-SMA and Monthly Trend Momentum
+  - **Time Period**: 2015-2025 (10+ years)
+  - **Approach**: Single asset focus, no portfolio switching
 
 ## 🚀 Quick Start
 

@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>5-Year Period Summary - Top 5 ETFs</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 30px 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .analysis-summary {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #28a745;
+        }
+
+        .period-comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .period-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .period-1 {
+            border-left: 4px solid #007bff;
+        }
+
+        .period-2 {
+            border-left: 4px solid #28a745;
+        }
+
+        .period-card h3 {
+            margin-bottom: 15px;
+        }
+
+        .controls {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0 10px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+        }
+
+        .summary-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .summary-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .summary-table th {
+            background: #28a745;
+            color: white;
+            padding: 12px 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 11px;
+            position: sticky;
+            top: 0;
+        }
+
+        .summary-table td {
+            padding: 10px 8px;
+            border-bottom: 1px solid #e9ecef;
+            text-align: center;
+        }
+
+        .summary-table tbody tr:hover {
+            background-color: #f8fff8;
+        }
+
+        .etf-symbol {
+            font-weight: bold;
+            background-color: #f8f9fa;
+            color: #28a745;
+        }
+
+        .period-1-data {
+            background-color: #e3f2fd;
+        }
+
+        .period-2-data {
+            background-color: #e8f5e8;
+        }
+
+        .positive {
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .negative {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .neutral {
+            color: #6c757d;
+        }
+
+        .rank-1 { background-color: #ffd700 !important; }
+        .rank-2 { background-color: #c0c0c0 !important; }
+        .rank-3 { background-color: #cd7f32 !important; }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+
+        .loading::before {
+            content: "⏳";
+            font-size: 2em;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px;
+            border: 1px solid #f5c6cb;
+        }
+
+        .top-performers {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .winner-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .winner-1 {
+            border: 3px solid #007bff;
+        }
+
+        .winner-2 {
+            border: 3px solid #28a745;
+        }
+
+        .winner-symbol {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .consistency-analysis {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .consistency-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .consistency-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .consistent {
+            border-left: 4px solid #28a745;
+        }
+
+        .inconsistent {
+            border-left: 4px solid #dc3545;
+        }
+
+        .top-etf-panels {
+            margin-bottom: 30px;
+        }
+
+        .period-panels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .etf-panel {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .period-1-panel {
+            border-top: 4px solid #007bff;
+        }
+
+        .period-2-panel {
+            border-top: 4px solid #28a745;
+        }
+
+        .panel-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #e9ecef;
+            text-align: center;
+        }
+
+        .panel-header h3 {
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .panel-header p {
+            margin: 0;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .etf-list {
+            padding: 15px;
+        }
+
+        .etf-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #ddd;
+            transition: all 0.3s ease;
+        }
+
+        .etf-item:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .etf-item.rank-1 {
+            border-left-color: #ffd700;
+            background: linear-gradient(135deg, #fff9c4 0%, #f8f9fa 100%);
+        }
+
+        .etf-item.rank-2 {
+            border-left-color: #c0c0c0;
+            background: linear-gradient(135deg, #f5f5f5 0%, #f8f9fa 100%);
+        }
+
+        .etf-item.rank-3 {
+            border-left-color: #cd7f32;
+            background: linear-gradient(135deg, #fdf2e9 0%, #f8f9fa 100%);
+        }
+
+        .etf-info {
+            flex: 1;
+        }
+
+        .etf-symbol {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #28a745;
+            margin-bottom: 2px;
+        }
+
+        .etf-name {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .etf-metrics {
+            text-align: right;
+            min-width: 150px;
+        }
+
+        .metric-value {
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
+        .metric-label {
+            font-size: 0.8em;
+            color: #666;
+        }
+
+        .rank-badge {
+            background: #28a745;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .rank-badge.rank-1 {
+            background: #ffd700;
+            color: #333;
+        }
+
+        .rank-badge.rank-2 {
+            background: #c0c0c0;
+            color: #333;
+        }
+
+        .rank-badge.rank-3 {
+            background: #cd7f32;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .period-comparison, .top-performers, .period-panels {
+                grid-template-columns: 1fr;
+            }
+            
+            .summary-table {
+                font-size: 11px;
+            }
+            
+            .summary-table th, .summary-table td {
+                padding: 6px 4px;
+            }
+
+            .etf-item {
+                flex-direction: column;
+                align-items: flex-start;
+                text-align: left;
+            }
+
+            .etf-metrics {
+                text-align: left;
+                min-width: auto;
+                width: 100%;
+                margin-top: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 5-Year Period Summary Analysis</h1>
+            <p>Comprehensive performance comparison of top 5 ETFs across two distinct 5-year periods</p>
+        </div>
+
+        <div class="analysis-summary">
+            <h3>🎯 Analysis Overview</h3>
+            <p><strong>Objective:</strong> Compare ETF performance across two 5-year periods to identify consistent winners and sector rotation patterns.</p>
+            <p><strong>Methodology:</strong> Calculate total average monthly trend and 5D-SMA price gains for each ETF in both periods.</p>
+            <p><strong>Top 5 ETFs:</strong> XLK (Technology), SPY (S&P 500), XLC (Communications), XLI (Industrial), XLE (Energy)</p>
+        </div>
+
+        <div class="period-comparison">
+            <div class="period-card period-1">
+                <h3>📈 Period 1: 2015-2020</h3>
+                <p><strong>Market Context:</strong> Post-financial crisis recovery, technology boom, ultra-low interest rates</p>
+                <p><strong>Winner:</strong> XLK (Technology Sector)</p>
+                <p><strong>Characteristics:</strong> Growth-driven market, tech dominance, QE policies</p>
+            </div>
+            <div class="period-card period-2">
+                <h3>📈 Period 2: 2021-2025</h3>
+                <p><strong>Market Context:</strong> Post-pandemic recovery, energy resurgence, inflation concerns</p>
+                <p><strong>Winner:</strong> XLE (Energy Sector)</p>
+                <p><strong>Characteristics:</strong> Value rotation, commodity super-cycle, rate normalization</p>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn" onclick="loadFiveYearSummary()">Load 5-Year Summary Data</button>
+            <button class="btn" onclick="exportToCSV()">Export Summary Data</button>
+        </div>
+
+        <div id="topETFPanels" class="top-etf-panels" style="display: none;">
+            <div class="period-panels">
+                <div class="etf-panel period-1-panel">
+                    <div class="panel-header">
+                        <h3>🏆 Top 5 ETFs - Period 1 (2015-2020)</h3>
+                        <p>Ranked by Average Monthly Trend Performance</p>
+                    </div>
+                    <div id="period1ETFList" class="etf-list">
+                        <div class="loading">Loading Period 1 data...</div>
+                    </div>
+                </div>
+                
+                <div class="etf-panel period-2-panel">
+                    <div class="panel-header">
+                        <h3>🏆 Top 5 ETFs - Period 2 (2021-2024)</h3>
+                        <p>Ranked by Average Monthly Trend Performance</p>
+                    </div>
+                    <div id="period2ETFList" class="etf-list">
+                        <div class="loading">Loading Period 2 data...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="winnersSection" style="display: none;">
+            <div class="top-performers">
+                <div class="winner-card winner-1">
+                    <div class="winner-symbol" id="period1Winner">-</div>
+                    <h4>Period 1 Winner (2015-2020)</h4>
+                    <div id="period1Stats">Loading...</div>
+                </div>
+                <div class="winner-card winner-2">
+                    <div class="winner-symbol" id="period2Winner">-</div>
+                    <h4>Period 2 Winner (2021-2025)</h4>
+                    <div id="period2Stats">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+
+
+        <div id="consistencySection" class="consistency-analysis" style="display: none;">
+            <h3>🔍 Consistency Analysis</h3>
+            <p>ETFs ranked by consistency across both 5-year periods</p>
+            <div class="consistency-grid" id="consistencyGrid">
+                <!-- Consistency cards will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let summaryData = {};
+        
+        const TOP_5_ETFS = [
+            { symbol: 'XLK', name: 'Technology Select Sector SPDR Fund' },
+            { symbol: 'SPY', name: 'SPDR S&P 500 ETF Trust' },
+            { symbol: 'XLC', name: 'Communication Services Select Sector SPDR Fund' },
+            { symbol: 'XLI', name: 'Industrial Select Sector SPDR Fund' },
+            { symbol: 'XLE', name: 'Energy Select Sector SPDR Fund' }
+        ];
+
+        async function loadFiveYearSummary() {
+            // Show loading state in the ETF panels
+            const period1Container = document.getElementById('period1ETFList');
+            const period2Container = document.getElementById('period2ETFList');
+            
+            if (period1Container) period1Container.innerHTML = '<div class="loading">Loading Period 1 data...</div>';
+            if (period2Container) period2Container.innerHTML = '<div class="loading">Loading Period 2 data...</div>';
+            
+            // Show the panels section
+            const panelsSection = document.getElementById('topETFPanels');
+            if (panelsSection) panelsSection.style.display = 'block';
+            
+            try {
+                // Load data for all top 5 ETFs
+                for (const etf of TOP_5_ETFS) {
+                    try {
+                        const response = await fetch(`/api/prices/${etf.symbol}?all=true`);
+                        
+                        if (!response.ok) {
+                            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                        }
+                        
+                        const data = await response.json();
+                        
+                        if (data.success && data.data && data.data.length > 0) {
+                            summaryData[etf.symbol] = {
+                                info: etf,
+                                periods: calculateFiveYearPeriods(data.data)
+                            };
+                        } else {
+                            console.warn(`No data available for ${etf.symbol}:`, data.message || 'Unknown error');
+                        }
+                    } catch (fetchError) {
+                        console.error(`Failed to fetch data for ${etf.symbol}:`, fetchError);
+                        // Continue with other ETFs even if one fails
+                    }
+                }
+                
+                displayTopETFPanels();
+                displayWinners();
+                displayConsistencyAnalysis();
+                
+            } catch (error) {
+                console.error('Error loading 5-year summary:', error);
+                
+                const errorHtml = `<div class="error">
+                    <h4>⚠️ Error Loading Data</h4>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <p><strong>Possible causes:</strong></p>
+                    <ul>
+                        <li>Backend server is not running</li>
+                        <li>API endpoints are not available</li>
+                        <li>Network connection issues</li>
+                        <li>Database connectivity problems</li>
+                    </ul>
+                    <p><strong>Solutions:</strong></p>
+                    <ul>
+                        <li>Start the backend server (node server.js)</li>
+                        <li>Check if the API endpoints are accessible</li>
+                        <li>Verify database connection</li>
+                    </ul>
+                </div>`;
+                
+                // Show error in both panels
+                const period1Container = document.getElementById('period1ETFList');
+                const period2Container = document.getElementById('period2ETFList');
+                
+                if (period1Container) period1Container.innerHTML = errorHtml;
+                if (period2Container) period2Container.innerHTML = errorHtml;
+            }
+        }
+
+        function calculateFiveYearPeriods(data) {
+            // Split data into two periods: 2015-2020 and 2021-2025
+            const period1Data = data.filter(d => d.date >= '2015-10-12' && d.date <= '2020-12-31');
+            const period2Data = data.filter(d => d.date >= '2021-01-01' && d.date <= '2024-12-31');
+            
+            return {
+                period1: calculatePeriodSummary(period1Data, 'Period 1 (2015-2020)'),
+                period2: calculatePeriodSummary(period2Data, 'Period 2 (2021-2025)')
+            };
+        }
+
+        function calculatePeriodSummary(data, periodName) {
+            if (data.length === 0) {
+                return {
+                    valid: false,
+                    periodName: periodName,
+                    error: 'No data available'
+                };
+            }
+            
+            // Filter valid data
+            const validPrices = data.filter(d => d.close != null);
+            const validSMA = data.filter(d => d.sma_5d != null);
+            const validTrends = data.filter(d => d.monthly_trend != null);
+            
+            if (validPrices.length === 0) {
+                return {
+                    valid: false,
+                    periodName: periodName,
+                    error: 'No valid price data'
+                };
+            }
+            
+            const closes = validPrices.map(d => d.close);
+            const smaValues = validSMA.map(d => d.sma_5d);
+            const monthlyTrends = validTrends.map(d => d.monthly_trend);
+            
+            // Calculate comprehensive metrics
+            const summary = {
+                valid: true,
+                periodName: periodName,
+                totalRecords: data.length,
+                tradingDays: validPrices.length,
+                
+                // Date range
+                startDate: validPrices[0].date,
+                endDate: validPrices[validPrices.length - 1].date,
+                
+                // Price metrics
+                startPrice: closes[0],
+                endPrice: closes[closes.length - 1],
+                minPrice: Math.min(...closes),
+                maxPrice: Math.max(...closes),
+                avgPrice: closes.reduce((a, b) => a + b, 0) / closes.length,
+                
+                // Returns
+                totalPriceReturn: ((closes[closes.length - 1] - closes[0]) / closes[0]) * 100,
+                annualizedReturn: (Math.pow(closes[closes.length - 1] / closes[0], 1/5) - 1) * 100,
+                
+                // 5D-SMA metrics
+                startSMA: smaValues.length > 0 ? smaValues[0] : null,
+                endSMA: smaValues.length > 0 ? smaValues[smaValues.length - 1] : null,
+                avgSMA: smaValues.length > 0 ? smaValues.reduce((a, b) => a + b, 0) / smaValues.length : null,
+                totalSMAGain: smaValues.length > 0 ? ((smaValues[smaValues.length - 1] - smaValues[0]) / smaValues[0]) * 100 : null,
+                
+                // Monthly trend metrics
+                avgMonthlyTrend: monthlyTrends.length > 0 ? monthlyTrends.reduce((a, b) => a + b, 0) / monthlyTrends.length : null,
+                totalMonthlyTrend: monthlyTrends.length > 0 ? monthlyTrends.reduce((a, b) => a + b, 0) : null,
+                
+                // Risk metrics
+                volatility: calculateVolatility(closes),
+                maxDrawdown: calculateMaxDrawdown(closes),
+                
+                // Additional metrics
+                positiveMonths: monthlyTrends.filter(t => t > 0).length,
+                negativeMonths: monthlyTrends.filter(t => t < 0).length,
+                winRate: monthlyTrends.length > 0 ? (monthlyTrends.filter(t => t > 0).length / monthlyTrends.length) * 100 : 0
+            };
+            
+            return summary;
+        }
+
+        function calculateVolatility(prices) {
+            if (prices.length < 2) return 0;
+            
+            const returns = [];
+            for (let i = 1; i < prices.length; i++) {
+                returns.push((prices[i] - prices[i-1]) / prices[i-1]);
+            }
+            
+            const avgReturn = returns.reduce((a, b) => a + b, 0) / returns.length;
+            const variance = returns.reduce((sum, ret) => sum + Math.pow(ret - avgReturn, 2), 0) / returns.length;
+            
+            return Math.sqrt(variance * 252) * 100; // Annualized volatility
+        }
+
+        function calculateMaxDrawdown(prices) {
+            let maxDrawdown = 0;
+            let peak = prices[0];
+            
+            for (let i = 1; i < prices.length; i++) {
+                if (prices[i] > peak) {
+                    peak = prices[i];
+                } else {
+                    const drawdown = ((peak - prices[i]) / peak) * 100;
+                    maxDrawdown = Math.max(maxDrawdown, drawdown);
+                }
+            }
+            
+            return maxDrawdown;
+        }
+
+        function displaySummaryTable() {
+            const etfResults = [];
+            
+            Object.values(summaryData).forEach(etfData => {
+                if (etfData.periods.period1.valid && etfData.periods.period2.valid) {
+                    etfResults.push({
+                        symbol: etfData.info.symbol,
+                        name: etfData.info.name,
+                        period1: etfData.periods.period1,
+                        period2: etfData.periods.period2
+                    });
+                }
+            });
+            
+            // Sort by period 1 average monthly trend for ranking
+            etfResults.sort((a, b) => b.period1.avgMonthlyTrend - a.period1.avgMonthlyTrend);
+            
+            let html = `
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">ETF</th>
+                            <th rowspan="2">Name</th>
+                            <th colspan="6">Period 1 (2015-2020)</th>
+                            <th colspan="6">Period 2 (2021-2025)</th>
+                            <th rowspan="2">Rank Change</th>
+                        </tr>
+                        <tr>
+                            <th>Records</th>
+                            <th>Total Return %</th>
+                            <th>Annual Return %</th>
+                            <th>5D-SMA Gain %</th>
+                            <th>Avg Monthly Trend</th>
+                            <th>Volatility %</th>
+                            <th>Records</th>
+                            <th>Total Return %</th>
+                            <th>Annual Return %</th>
+                            <th>5D-SMA Gain %</th>
+                            <th>Avg Monthly Trend</th>
+                            <th>Volatility %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            
+            // Sort period 2 for ranking comparison
+            const period2Sorted = [...etfResults].sort((a, b) => b.period2.avgMonthlyTrend - a.period2.avgMonthlyTrend);
+            
+            etfResults.forEach((result, index) => {
+                const p1 = result.period1;
+                const p2 = result.period2;
+                
+                const p1Rank = index + 1;
+                const p2Rank = period2Sorted.findIndex(r => r.symbol === result.symbol) + 1;
+                const rankChange = p2Rank - p1Rank;
+                
+                const rankClass = p1Rank <= 3 ? `rank-${p1Rank}` : '';
+                
+                html += `
+                    <tr class="${rankClass}">
+                        <td class="etf-symbol">${result.symbol}</td>
+                        <td style="text-align: left; max-width: 200px;">${result.name}</td>
+                        
+                        <td class="period-1-data">${p1.totalRecords}</td>
+                        <td class="period-1-data ${p1.totalPriceReturn > 0 ? 'positive' : 'negative'}">${p1.totalPriceReturn.toFixed(1)}%</td>
+                        <td class="period-1-data ${p1.annualizedReturn > 0 ? 'positive' : 'negative'}">${p1.annualizedReturn.toFixed(1)}%</td>
+                        <td class="period-1-data ${p1.totalSMAGain > 0 ? 'positive' : 'negative'}">${p1.totalSMAGain ? p1.totalSMAGain.toFixed(1) + '%' : 'N/A'}</td>
+                        <td class="period-1-data ${p1.avgMonthlyTrend > 0 ? 'positive' : 'negative'}">${p1.avgMonthlyTrend ? p1.avgMonthlyTrend.toFixed(4) : 'N/A'}</td>
+                        <td class="period-1-data">${p1.volatility.toFixed(1)}%</td>
+                        
+                        <td class="period-2-data">${p2.totalRecords}</td>
+                        <td class="period-2-data ${p2.totalPriceReturn > 0 ? 'positive' : 'negative'}">${p2.totalPriceReturn.toFixed(1)}%</td>
+                        <td class="period-2-data ${p2.annualizedReturn > 0 ? 'positive' : 'negative'}">${p2.annualizedReturn.toFixed(1)}%</td>
+                        <td class="period-2-data ${p2.totalSMAGain > 0 ? 'positive' : 'negative'}">${p2.totalSMAGain ? p2.totalSMAGain.toFixed(1) + '%' : 'N/A'}</td>
+                        <td class="period-2-data ${p2.avgMonthlyTrend > 0 ? 'positive' : 'negative'}">${p2.avgMonthlyTrend ? p2.avgMonthlyTrend.toFixed(4) : 'N/A'}</td>
+                        <td class="period-2-data">${p2.volatility.toFixed(1)}%</td>
+                        
+                        <td class="${rankChange > 0 ? 'negative' : rankChange < 0 ? 'positive' : 'neutral'}">
+                            ${rankChange > 0 ? '+' + rankChange : rankChange}
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            
+            document.getElementById('summaryTableContainer').innerHTML = html;
+        }
+
+        function displayTopETFPanels() {
+            const etfResults = [];
+            
+            Object.values(summaryData).forEach(etfData => {
+                if (etfData.periods.period1.valid && etfData.periods.period2.valid) {
+                    etfResults.push({
+                        symbol: etfData.info.symbol,
+                        name: etfData.info.name,
+                        period1: etfData.periods.period1,
+                        period2: etfData.periods.period2
+                    });
+                }
+            });
+            
+            if (etfResults.length === 0) return;
+            
+            // Sort by period 1 performance
+            const period1Sorted = [...etfResults].sort((a, b) => {
+                const aTrend = a.period1.avgMonthlyTrend || 0;
+                const bTrend = b.period1.avgMonthlyTrend || 0;
+                return bTrend - aTrend;
+            });
+            
+            // Sort by period 2 performance
+            const period2Sorted = [...etfResults].sort((a, b) => {
+                const aTrend = a.period2.avgMonthlyTrend || 0;
+                const bTrend = b.period2.avgMonthlyTrend || 0;
+                return bTrend - aTrend;
+            });
+            
+            // Generate Period 1 panel
+            let period1Html = '';
+            period1Sorted.forEach((etf, index) => {
+                const rank = index + 1;
+                const p1 = etf.period1;
+                const rankClass = rank <= 3 ? `rank-${rank}` : '';
+                
+                period1Html += `
+                    <div class="etf-item ${rankClass}">
+                        <div class="etf-info">
+                            <div class="etf-symbol">${etf.symbol}</div>
+                            <div class="etf-name">${etf.name}</div>
+                        </div>
+                        <div class="etf-metrics">
+                            <div class="metric-value ${(p1.avgMonthlyTrend || 0) > 0 ? 'positive' : 'negative'}">
+                                ${p1.avgMonthlyTrend ? p1.avgMonthlyTrend.toFixed(4) : 'N/A'}
+                            </div>
+                            <div class="metric-label">Avg Monthly Trend</div>
+                            <div class="metric-value ${p1.totalPriceReturn > 0 ? 'positive' : 'negative'}">
+                                ${p1.totalPriceReturn.toFixed(1)}%
+                            </div>
+                            <div class="metric-label">Total Return</div>
+                        </div>
+                        <div class="rank-badge ${rankClass}">#${rank}</div>
+                    </div>
+                `;
+            });
+            
+            // Generate Period 2 panel
+            let period2Html = '';
+            period2Sorted.forEach((etf, index) => {
+                const rank = index + 1;
+                const p2 = etf.period2;
+                const rankClass = rank <= 3 ? `rank-${rank}` : '';
+                
+                period2Html += `
+                    <div class="etf-item ${rankClass}">
+                        <div class="etf-info">
+                            <div class="etf-symbol">${etf.symbol}</div>
+                            <div class="etf-name">${etf.name}</div>
+                        </div>
+                        <div class="etf-metrics">
+                            <div class="metric-value ${(p2.avgMonthlyTrend || 0) > 0 ? 'positive' : 'negative'}">
+                                ${p2.avgMonthlyTrend ? p2.avgMonthlyTrend.toFixed(4) : 'N/A'}
+                            </div>
+                            <div class="metric-label">Avg Monthly Trend</div>
+                            <div class="metric-value ${p2.totalPriceReturn > 0 ? 'positive' : 'negative'}">
+                                ${p2.totalPriceReturn.toFixed(1)}%
+                            </div>
+                            <div class="metric-label">Total Return</div>
+                        </div>
+                        <div class="rank-badge ${rankClass}">#${rank}</div>
+                    </div>
+                `;
+            });
+            
+            // Update the panels
+            document.getElementById('period1ETFList').innerHTML = period1Html;
+            document.getElementById('period2ETFList').innerHTML = period2Html;
+            document.getElementById('topETFPanels').style.display = 'block';
+        }
+
+        function displayWinners() {
+            const etfResults = Object.values(summaryData);
+            
+            if (etfResults.length === 0) return;
+            
+            // Find winners for each period
+            const period1Winner = etfResults.reduce((winner, etf) => {
+                if (!etf.periods.period1.valid) return winner;
+                return (!winner || etf.periods.period1.avgMonthlyTrend > winner.periods.period1.avgMonthlyTrend) ? etf : winner;
+            }, null);
+            
+            const period2Winner = etfResults.reduce((winner, etf) => {
+                if (!etf.periods.period2.valid) return winner;
+                return (!winner || etf.periods.period2.avgMonthlyTrend > winner.periods.period2.avgMonthlyTrend) ? etf : winner;
+            }, null);
+            
+            if (period1Winner) {
+                const p1 = period1Winner.periods.period1;
+                document.getElementById('period1Winner').textContent = period1Winner.info.symbol;
+                document.getElementById('period1Stats').innerHTML = `
+                    <p><strong>Avg Monthly Trend:</strong> ${p1.avgMonthlyTrend.toFixed(4)}</p>
+                    <p><strong>Total Return:</strong> ${p1.totalPriceReturn.toFixed(1)}%</p>
+                    <p><strong>5D-SMA Gain:</strong> ${p1.totalSMAGain.toFixed(1)}%</p>
+                `;
+            }
+            
+            if (period2Winner) {
+                const p2 = period2Winner.periods.period2;
+                document.getElementById('period2Winner').textContent = period2Winner.info.symbol;
+                document.getElementById('period2Stats').innerHTML = `
+                    <p><strong>Avg Monthly Trend:</strong> ${p2.avgMonthlyTrend.toFixed(4)}</p>
+                    <p><strong>Total Return:</strong> ${p2.totalPriceReturn.toFixed(1)}%</p>
+                    <p><strong>5D-SMA Gain:</strong> ${p2.totalSMAGain.toFixed(1)}%</p>
+                `;
+            }
+            
+            document.getElementById('winnersSection').style.display = 'block';
+        }
+
+        function displayConsistencyAnalysis() {
+            const etfResults = [];
+            
+            Object.values(summaryData).forEach(etfData => {
+                if (etfData.periods.period1.valid && etfData.periods.period2.valid) {
+                    etfResults.push({
+                        symbol: etfData.info.symbol,
+                        name: etfData.info.name,
+                        period1: etfData.periods.period1,
+                        period2: etfData.periods.period2
+                    });
+                }
+            });
+            
+            // Calculate consistency scores
+            // Create separate sorted arrays to avoid mutating the original array
+            const period1Sorted = [...etfResults].sort((a, b) => {
+                const aTrend = a.period1.avgMonthlyTrend || 0;
+                const bTrend = b.period1.avgMonthlyTrend || 0;
+                return bTrend - aTrend;
+            });
+            
+            const period2Sorted = [...etfResults].sort((a, b) => {
+                const aTrend = a.period2.avgMonthlyTrend || 0;
+                const bTrend = b.period2.avgMonthlyTrend || 0;
+                return bTrend - aTrend;
+            });
+            
+            etfResults.forEach(result => {
+                const p1Rank = period1Sorted.findIndex(r => r.symbol === result.symbol) + 1;
+                const p2Rank = period2Sorted.findIndex(r => r.symbol === result.symbol) + 1;
+                
+                result.p1Rank = p1Rank;
+                result.p2Rank = p2Rank;
+                result.rankChange = Math.abs(p2Rank - p1Rank);
+                result.isConsistent = result.rankChange <= 2;
+            });
+            
+            // Sort by consistency (lowest rank change first)
+            etfResults.sort((a, b) => a.rankChange - b.rankChange);
+            
+            let html = '';
+            etfResults.forEach(result => {
+                html += `
+                    <div class="consistency-card ${result.isConsistent ? 'consistent' : 'inconsistent'}">
+                        <h4>${result.symbol}</h4>
+                        <p>P1 Rank: #${result.p1Rank} → P2 Rank: #${result.p2Rank}</p>
+                        <p><strong>Change:</strong> ${result.rankChange === 0 ? 'No change' : `±${result.rankChange} positions`}</p>
+                        <p><strong>Status:</strong> ${result.isConsistent ? '✅ Consistent' : '❌ Volatile'}</p>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('consistencyGrid').innerHTML = html;
+            document.getElementById('consistencySection').style.display = 'block';
+        }
+
+        function exportToCSV() {
+            if (Object.keys(summaryData).length === 0) {
+                alert('No data to export. Please load 5-year summary data first.');
+                return;
+            }
+
+            const headers = [
+                'ETF', 'ETF Name',
+                'P1 Records', 'P1 Total Return %', 'P1 Annual Return %', 'P1 5D-SMA Gain %', 'P1 Avg Monthly Trend', 'P1 Volatility %',
+                'P2 Records', 'P2 Total Return %', 'P2 Annual Return %', 'P2 5D-SMA Gain %', 'P2 Avg Monthly Trend', 'P2 Volatility %',
+                'P1 Rank', 'P2 Rank', 'Rank Change'
+            ];
+            
+            let csvContent = headers.join(',') + '\n';
+            
+            Object.values(summaryData).forEach(etfData => {
+                if (etfData.periods.period1.valid && etfData.periods.period2.valid) {
+                    const p1 = etfData.periods.period1;
+                    const p2 = etfData.periods.period2;
+                    
+                    const row = [
+                        etfData.info.symbol,
+                        `"${etfData.info.name}"`,
+                        p1.totalRecords,
+                        p1.totalPriceReturn.toFixed(2),
+                        p1.annualizedReturn.toFixed(2),
+                        p1.totalSMAGain ? p1.totalSMAGain.toFixed(2) : '',
+                        p1.avgMonthlyTrend ? p1.avgMonthlyTrend.toFixed(4) : '',
+                        p1.volatility.toFixed(2),
+                        p2.totalRecords,
+                        p2.totalPriceReturn.toFixed(2),
+                        p2.annualizedReturn.toFixed(2),
+                        p2.totalSMAGain ? p2.totalSMAGain.toFixed(2) : '',
+                        p2.avgMonthlyTrend ? p2.avgMonthlyTrend.toFixed(4) : '',
+                        p2.volatility.toFixed(2),
+                        '', // P1 Rank - would need to calculate
+                        '', // P2 Rank - would need to calculate
+                        ''  // Rank Change - would need to calculate
+                    ];
+                    csvContent += row.join(',') + '\n';
+                }
+            });
+
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ETF_5Year_Period_Summary.csv';
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>

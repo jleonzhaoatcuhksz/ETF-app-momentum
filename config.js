@@ -12,94 +12,14 @@ module.exports = {
         endDate: '2025-10-10'
     },
 
-    // Core ETF symbols (14 total)
+    // Single ETF - No Switching Strategy (1 total)
     etfs: [
-        // Core ETFs (3)
+        // Focus on SPY only - Single ETF Buy & Hold Strategy
         {
             symbol: 'SPY',
             name: 'SPDR S&P 500 ETF Trust',
             sector: 'Large Cap Blend',
-            category: 'Core ETF'
-        },
-        {
-            symbol: 'TLT',
-            name: 'iShares 20+ Year Treasury Bond ETF',
-            sector: 'Long-Term Treasury',
-            category: 'Core ETF'
-        },
-        {
-            symbol: 'SHY',
-            name: 'iShares 1-3 Year Treasury Bond ETF',
-            sector: 'Short-Term Treasury',
-            category: 'Core ETF'
-        },
-
-        // iShares Sector ETFs (11 main sectors)
-        {
-            symbol: 'XLK',
-            name: 'Technology Select Sector SPDR Fund',
-            sector: 'Technology',
-            category: 'Sector ETF'
-        },
-        {
-            symbol: 'XLF',
-            name: 'Financial Select Sector SPDR Fund',
-            sector: 'Financials',
-            category: 'Sector ETF'
-        },
-        {
-            symbol: 'XLV',
-            name: 'Health Care Select Sector SPDR Fund',
-            sector: 'Health Care',
-            category: 'Sector ETF'
-        },
-        {
-            symbol: 'XLI',
-            name: 'Industrial Select Sector SPDR Fund',
-            sector: 'Industrials',
-            category: 'Sector ETF'
-        },
-        {
-            symbol: 'XLE',
-            name: 'Energy Select Sector SPDR Fund',
-            sector: 'Energy',
-            category: 'Sector ETF'
-        },
-        {
-            symbol: 'XLY',
-            name: 'Consumer Discretionary Select Sector SPDR Fund',
-            sector: 'Consumer Discretionary',
-            category: 'Sector ETF'
-        },
-        {
-            symbol: 'XLP',
-            name: 'Consumer Staples Select Sector SPDR Fund',
-            sector: 'Consumer Staples',
-            category: 'Sector ETF'
-        },
-        {
-            symbol: 'XLU',
-            name: 'Utilities Select Sector SPDR Fund',
-            sector: 'Utilities',
-            category: 'Sector ETF'
-        },
-        {
-            symbol: 'XLB',
-            name: 'Materials Select Sector SPDR Fund',
-            sector: 'Materials',
-            category: 'Sector ETF'
-        },
-        {
-            symbol: 'XLRE',
-            name: 'Real Estate Select Sector SPDR Fund',
-            sector: 'Real Estate',
-            category: 'Sector ETF'
-        },
-        {
-            symbol: 'XLC',
-            name: 'Communication Services Select Sector SPDR Fund',
-            sector: 'Communication Services',
-            category: 'Sector ETF'
+            category: 'Single ETF - No Switching'
         }
     ],
 

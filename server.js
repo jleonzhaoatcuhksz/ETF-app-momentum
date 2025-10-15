@@ -5,7 +5,7 @@ const logger = require('./logger');
 const momentum = require('./momentum');
 
 const app = express();
-const PORT = process.env.PORT || 3019;
+const PORT = process.env.PORT || 3020;
 
 // Middleware
 app.use(express.json());
@@ -28,6 +28,99 @@ async function initializeDatabase() {
 }
 
 // API Routes
+
+// Get ML Results
+app.get('/api/ml-results', async (req, res) => {
+    try {
+        const fs = require('fs');
+        const results = {};
+        
+        // Load all ML result files
+        const resultFiles = [
+            'best_fast_ml_results.json',
+            'random_forest_results.json', 
+            'xgboost_results.json',
+            'lightgbm_results.json',
+            'improved_strategy_results.json',
+            'etf_switching_results.json'
+        ];
+        
+        for (const file of resultFiles) {
+            if (fs.existsSync(file)) {
+                try {
+                    const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+                    const modelName = file.replace('_results.json', '').replace('.json', '');
+                    results[modelName] = data;
+                } catch (e) {
+                    logger.error(`Error loading ${file}:`, e);
+                }
+            }
+        }
+        
+        res.json({
+            success: true,
+            data: results,
+            count: Object.keys(results).length
+        });
+    } catch (error) {
+        logger.error('Error fetching ML results:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
+
+// Get trading performance summary
+app.get('/api/trading-performance', async (req, res) => {
+    try {
+        const fs = require('fs');
+        const performance = [];
+        
+        const resultFiles = [
+            'best_fast_ml_results.json',
+            'random_forest_results.json', 
+            'xgboost_results.json',
+            'lightgbm_results.json'
+        ];
+        
+        for (const file of resultFiles) {
+            if (fs.existsSync(file)) {
+                try {
+                    const data = JSON.parse(fs.readFileSync(file, 'utf8'));
+                    const modelName = file.replace('_results.json', '').replace('.json', '').toUpperCase();
+                    
+                    performance.push({
+                        model: modelName,
+                        strategy_return: data.strategy_return || 0,
+                        spy_return: data.spy_return || 0,
+                        outperformance: data.outperformance || 0,
+                        total_trades: data.total_trades || 0,
+                        final_portfolio_value: data.final_portfolio_value || 0,
+                        trades: data.trades || []
+                    });
+                } catch (e) {
+                    logger.error(`Error loading ${file}:`, e);
+                }
+            }
+        }
+        
+        // Sort by outperformance
+        performance.sort((a, b) => b.outperformance - a.outperformance);
+        
+        res.json({
+            success: true,
+            data: performance,
+            count: performance.length
+        });
+    } catch (error) {
+        logger.error('Error fetching trading performance:', error);
+        res.status(500).json({
+            success: false,
+            error: error.message
+        });
+    }
+});
 
 // Get all ETFs
 app.get('/api/etfs', async (req, res) => {
@@ -296,9 +389,19 @@ app.get('/api/health', (req, res) => {
     });
 });
 
-// Serve ETF viewer page
+// Serve SPY viewer page (single ETF, no switching)
 app.get('/viewer', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'etf-viewer.html'));
+    res.sendFile(path.join(__dirname, 'public', 'spy-viewer.html'));
+});
+
+// Also serve at /spy for clarity
+app.get('/spy', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'spy-viewer.html'));
+});
+
+// Serve 5-year summary page
+app.get('/summary', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'five-year-summary.html'));
 });
 
 // Serve main page
@@ -321,8 +424,8 @@ app.get('/', (req, res) => {
         </head>
         <body>
             <div class="header">
-                <h1>📊 ETF Data System</h1>
-                <p>Historical price data for 14 core ETFs (2015-2025)</p>
+                <h1>📊 SPY Analysis - No Switching Strategy</h1>
+                <p>Historical price data for SPY (SPDR S&P 500 ETF) - Single ETF Buy & Hold (2015-2025)</p>
             </div>
             
             <div class="stats" id="stats">
