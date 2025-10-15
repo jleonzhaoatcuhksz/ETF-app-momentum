@@ -1,84 +1,88 @@
-# ETF-App-1w - Simplified Project Structure
+# ETF-App-3w - 3-ETF Rotation Strategy
 
-## 🎯 FINAL CLEAN ARCHITECTURE
+## 🎯 MULTI-ETF ROTATION ARCHITECTURE
 
 ```
-ETF-app-1w/
+ETF-app-3w/
 ├── 🌐 WEB APPLICATION
-│   ├── server_clean.js          # Main Express server (PORT: 3022)
+│   ├── server_clean.js          # Main Express server (PORT: 3023)
 │   ├── package.json             # Node.js dependencies  
 │   ├── package-lock.json        # Dependency lock file
 │   └── public/                  # Static web files
 │
 ├── 📊 DATABASE & DATA
-│   ├── etf_data.db             # Main SQLite database
+│   ├── etf_data.db             # Main SQLite database (3 ETFs: SPY, QQQ, IWM)
 │   ├── etf_data.db-shm         # SQLite shared memory
 │   └── etf_data.db-wal         # SQLite write-ahead log
 │
-├── 🤖 ML STRATEGY ENGINE
-│   ├── fast_ml_strategy.py     # 🔥 MAIN ML strategy generator
+├── 🤖 ML STRATEGY ENGINE (3-ETF ROTATION)
+│   ├── fast_ml_strategy_3etf.py # 🔥 MAIN 3-ETF rotation strategy
 │   └── ml_result_viewer_fixed.py # Results analyzer & viewer
 │
-├── 📈 ML RESULTS (JSON)
-│   ├── random_forest_results.json    # Random Forest model results
-│   ├── lightgbm_results.json        # LightGBM model results  
-│   ├── xgboost_results.json         # XGBoost model results
-│   ├── best_fast_ml_results.json    # Best performing model
-│   ├── etf_switching_results.json   # ETF switching results
-│   └── improved_strategy_results.json # Improved strategy results
+├── 📈 ML RESULTS (JSON) - 3-ETF ROTATION
+│   ├── random_forest_3etf_results.json    # Random Forest 3-ETF results
+│   ├── lightgbm_3etf_results.json        # LightGBM 3-ETF results  
+│   ├── xgboost_3etf_results.json         # XGBoost 3-ETF results
+│   ├── best_3etf_rotation_results.json   # Best performing rotation
+│   └── etf_rotation_comparison.json      # Performance comparison
 │
-├── 🧠 ML MODELS (H5)
-│   ├── etf_switching_model.h5       # Trained ETF switching model
-│   ├── improved_etf_model.h5        # Improved model version
-│   └── positive_etf_model.h5        # Positive score model
+├── 🧠 ML MODELS (H5) - 3-ETF MODELS
+│   ├── spy_model.h5                      # SPY prediction model
+│   ├── qqq_model.h5                      # QQQ prediction model
+│   └── iwm_model.h5                      # IWM prediction model
 │
 └── 📋 DOCUMENTATION
-    ├── PROJECT_STRUCTURE.md         # This file
-    ├── README.md                    # Project README
-    ├── README_ML_Strategy.md        # ML strategy documentation
-    ├── ml_analysis_report.txt       # Analysis report
-    └── requirements.txt             # Python dependencies
+    ├── FINAL_PROJECT_STRUCTURE.md         # This file
+    ├── README_3ETF_STRATEGY.md           # 3-ETF strategy documentation
+    ├── ml_analysis_report.txt            # Analysis report
+    └── requirements.txt                  # Python dependencies
 ```
 
 ## 🚀 HOW TO USE
 
 ### 1. Start the Web Server
 ```bash
-cd ETF-app-1w
+cd ETF-app-3w
 node server_clean.js
 ```
-Visit: http://localhost:3022
+Visit: http://localhost:3023
 
-### 2. Generate New ML Results (Optional)
+### 2. Generate 3-ETF Rotation Results
 ```bash
-python fast_ml_strategy.py
+python fast_ml_strategy_3etf.py
 ```
 
-### 3. View ML Analysis (Optional)  
+### 3. View 3-ETF Analysis
 ```bash
 python ml_result_viewer_fixed.py
 ```
 
-## 🔗 Key Relationships
+## 🔗 Key Relationships - 3-ETF ROTATION
 
-1. **fast_ml_strategy.py** → Generates → **JSON result files**
-2. **server_clean.js** → Reads JSON files → **Web interface**
-3. **etf_data.db** → Provides data to → **Both Python & Node.js**
+1. **fast_ml_strategy_3etf.py** → Analyzes SPY, QQQ, IWM → **JSON result files**
+2. **server_clean.js** → Reads 3-ETF JSON files → **Web interface**
+3. **etf_data.db** → Contains data for all 3 ETFs → **Both Python & Node.js**
 
-## 📊 Web Interface Features
+## 📊 3-ETF Web Interface Features
 
-- **ETF Data Overview**: Scrollable price data table
-- **ML Strategy Results**: All 3 models (RF, XGB, LGB) with performance metrics
-- **Trading Performance**: Detailed trade analysis with modal popups
+- **ETF Data Overview**: All 3 ETFs (SPY, QQQ, IWM) in rotation view
+- **ML Strategy Results**: 3-ETF rotation predictions from all models
+- **Trading Performance**: Multi-ETF rotation performance analysis
+- **ETF Comparison**: Side-by-side performance metrics
 
-## 🎯 SIMPLIFIED FILE COUNT
+## 🎯 3-ETF ROTATION STRATEGY
 
-**Before Cleanup**: 50+ files  
-**After Cleanup**: 25 essential files  
-**Reduction**: 50% fewer files, 100% functionality retained
+**Target ETFs**: 
+- **SPY**: S&P 500 ETF (Large Cap)
+- **QQQ**: Nasdaq 100 ETF (Tech Heavy)  
+- **IWM**: Russell 2000 ETF (Small Cap)
+
+**Strategy**: ML models predict which of the 3 ETFs will perform best in the next period
+**Rotation Logic**: Switch to the ETF with highest predicted performance
+**Risk Management**: Diversification across market cap sizes
 
 ## 🔴 CRITICAL FILES (Never Delete)
 - server_clean.js
 - etf_data.db  
-- fast_ml_strategy.py
+- fast_ml_strategy_3etf.py
 - package.json

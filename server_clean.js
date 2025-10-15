@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const port = 3022;
+const port = 3023;
 
 // Serve static files from public directory
 app.use(express.static('public'));
